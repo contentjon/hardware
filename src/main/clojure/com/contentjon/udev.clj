@@ -28,7 +28,7 @@
   (.udev_device_unref library device))
 
 (defn garbage-collected-ref [key obj]
-  (add-ref key object)
+  (add-ref key obj)
   (reify Object
     (finalize [_] (unref key obj))))
 
@@ -57,5 +57,6 @@
   (map first (enum-seq enumeration)))
 
 (defn in-class [enumeration & classes]
-  (doseq [class classes]
-    (.udev_enumerate_add_match_subsystem library enumeration class)))
+  (doseq [clazz classes]
+    (.udev_enumerate_add_match_subsystem library enumeration clazz))
+  enumeration)
