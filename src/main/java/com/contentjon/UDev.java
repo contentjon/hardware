@@ -21,6 +21,7 @@ public interface UDev extends Library {
     void    udev_enumerate_unref(Pointer enumeration);
     void    udev_enumerate_add_match_subsystem(Pointer enumeration, String subsystem);
     void    udev_enumerate_add_match_sysattr(Pointer enumeration, String attr, String value);
+    void    udev_enumerate_add_match_property(Pointer enumeration, String attr, String value);
     void    udev_enumerate_scan_devices(Pointer enumeration);
     Pointer udev_enumerate_get_list_entry(Pointer enumeration);
 
