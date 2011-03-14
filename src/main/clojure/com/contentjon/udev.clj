@@ -54,7 +54,9 @@
             next  (.udev_list_entry_get_next  library entry)]
         (cons [name value] (udev-seq next ref))))))
 
-(defn- enum-seq [enumeration]
+(defn- enum-seq
+  "Returns a lazy seq for an udev device enumeration"
+  [enumeration]
   (udev-seq
     (.udev_enumerate_get_list_entry library (:native enumeration))
     enumeration))
@@ -90,7 +92,8 @@
    the property value is added to the enumeration. Returns the
    modified enumeration"
   [enumeration property value]
-  (.udev_enumerate_add_match_property library (:native enumeration) property value))
+  (.udev_enumerate_add_match_property library (:native enumeration) property value)
+  enumeration)
 
 (defmacro enumerate-devices
   "Takes a udev context and a number of queries expressions. The expressions are
