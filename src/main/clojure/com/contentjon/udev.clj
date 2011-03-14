@@ -4,59 +4,71 @@
 
 (def library (com.sun.jna.Native/loadLibrary "udev" UDev))
 
-(Native/setProtected true)
+(defprotocol ReferenceCounted
+  (add-ref [_])
+  (rem-ref [_]))
 
-(defmulti add-ref (fn [key obj] key))
-(defmulti unref   (fn [key obj] key))
+(defmacro defreftype
+  ([name]      `(defreftype ~name "" []))
+  ([name type] `(defreftype ~name ~type [~'udev-ref]))
+  ([name type members]
+     (let [ref-symbol   (symbol (str ".udev_" type "_ref"))
+           unref-symbol (symbol (str ".udev_" type "_unref"))]
+       `(defrecord ~name ~(vec (concat ['native] members))
+          Object
+          (finalize [~'this] (rem-ref ~'this))
+          ReferenceCounted
+          (add-ref [_]
+                   (~ref-symbol library ~'native))
+          (rem-ref [_]
+                   (~unref-symbol library ~'native))))))
 
-(defmethod add-ref :udev [key udev]
-  (.udev_ref library udev))
+(defreftype UDevRef)
+(defreftype EnumerateRef "enumerate")
+(defreftype DeviceRef "device")
 
-(defmethod add-ref :enum [key enumeration]
-  (.udev_enumerate_ref library enumeration))
+(defn udev-context []
+  (UDevRef. (.udev_new library)))
 
-(defmethod add-ref :device [key device]
-  (.udev_device_ref library device))
+(defn enum [udev]
+  (EnumerateRef. (.udev_enumerate_new library (:native udev)) udev))
 
-(defmethod unref :udev [key udev]
-  (.udev_unref library udev))
+(defn device [udev path]
+  (DeviceRef. (.udev_device_new_from_syspath library (:native udev) path) udev))
 
-(defmethod unref :enum [key enumeration]
-  (.udev_enumerate_unref library enumeration))
-
-(defmethod unref :device [key device]
-  (.udev_device_unref library device))
-
-(defn garbage-collected-ref [key obj]
-  (add-ref key obj)
-  (reify Object
-    (finalize [_] (unref key obj))))
-
-(defmacro with-ref [key bind & forms]
-  `(let ~bind
-     (try 
-       ~@forms
-       (finally
-         (unref ~key ~(bind 0))))))
-
-(defn- udev-seq [entry collector]
+(defn- udev-seq [entry ref]
   (lazy-seq
     (when-not (= Pointer/NULL entry)
-      (let [name  (.udev_list_entry_get_name  library entry) 
+      (let [name  (.udev_list_entry_get_name  library entry)
             value (.udev_list_entry_get_value library entry)
-            next  (.udev_list_entry_get_next  library entry)] 
-        (cons [name value] (udev-seq next collector))))))
+            next  (.udev_list_entry_get_next  library entry)]
+        (cons [name value] (udev-seq next ref))))))
 
 (defn- enum-seq [enumeration]
   (udev-seq
-    (.udev_enumerate_get_list_entry library enumeration)
-    (garbage-collected-ref :enum enumeration)))
+    (.udev_enumerate_get_list_entry library (:native enumeration))
+    enumeration))
 
 (defn scan [enumeration]
-  (.udev_enumerate_scan_devices library enumeration)
+  (.udev_enumerate_scan_devices library (:native enumeration))
   (map first (enum-seq enumeration)))
 
 (defn in-class [enumeration & classes]
   (doseq [clazz classes]
-    (.udev_enumerate_add_match_subsystem library enumeration clazz))
+    (.udev_enumerate_add_match_subsystem library (:native enumeration) clazz))
   enumeration)
+
+(defn has-attribute
+  ([enumeration attribute]
+     (has-attribute enumeration attribute Pointer/NULL))
+  ([enumeration attribute value]
+     (.udev_enumerate_add_match_sysattr library (:native enumeration) attribute value)
+     enumeration))
+
+(defmacro enumerate-devices [context & queries]
+  `(-> (enum ~context)
+       ~@queries
+       (scan)))
+
+(defn get-attribute [device attribute]
+  (.udev_device_get_sysattr_value library (:native device) attribute))
