@@ -70,5 +70,12 @@
        ~@queries
        (scan)))
 
-(defn get-attribute [device attribute]
+(defn attribute [device attribute]
   (.udev_device_get_sysattr_value library (:native device) attribute))
+
+(defn property [device property]
+  (.udev_device_get_property_value library (:native device) property))
+
+(defn properties [device]
+  (udev-seq (.udev_device_get_properties_list_entry library (:native device))
+            device))
