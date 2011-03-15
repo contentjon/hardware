@@ -96,7 +96,7 @@
   enumeration)
 
 (defmacro enumerate-devices
-  "Takes a udev context and a number of queries expressions. The expressions are
+  "Takes a udev context and a number of query expressions. The expressions are
    threaded in such a way that a new enumeration object is inserted into the
    queries. As a final operation a scan for devices is added."
   [context & queries]
