@@ -1,7 +1,7 @@
-(ns com.contentjon.core)
+(ns com.contentjon.hardware)
 
 (def implementations
- { :Linux 'com.contentjon.udev })
+ { :Linux 'com.contentjon.backends.udev })
 
 (defn require-os-implementation []
   (let [os (System/getProperty "os.name")]

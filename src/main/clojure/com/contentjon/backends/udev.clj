@@ -1,4 +1,4 @@
-(ns com.contentjon.udev
+(ns com.contentjon.backends.udev
   (:import [com.contentjon UDev]
            [com.sun.jna Native Pointer]))
 
