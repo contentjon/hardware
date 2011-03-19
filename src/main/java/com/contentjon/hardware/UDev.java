@@ -1,4 +1,4 @@
-package com.contentjon;
+package com.contentjon.hardware;
 
 import com.sun.jna.Library;
 import com.sun.jna.Pointer;
@@ -20,6 +20,7 @@ public interface UDev extends Library {
     void    udev_enumerate_ref(Pointer enumeration);
     void    udev_enumerate_unref(Pointer enumeration);
     void    udev_enumerate_add_match_subsystem(Pointer enumeration, String subsystem);
+    void    udev_enumerate_add_match_sysname(Pointer enumeration, String name);
     void    udev_enumerate_add_match_sysattr(Pointer enumeration, String attr, String value);
     void    udev_enumerate_add_match_property(Pointer enumeration, String attr, String value);
     void    udev_enumerate_scan_devices(Pointer enumeration);

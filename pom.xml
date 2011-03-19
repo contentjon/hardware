@@ -19,6 +19,12 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
   
+  <scm>
+  	<connection>scm:git:git://github.com/jkrueger/hardware.git</connection>
+  	<developerConnection>scm:git:git@github.com:jkrueger/hardware.git</developerConnection>
+  	<tag>HEAD</tag>
+  	<url>https://github.com/jkrueger/hardware</url>
+  </scm>
   <dependencies>
   	<dependency>
   	  <groupId>com.sun.jna</groupId>

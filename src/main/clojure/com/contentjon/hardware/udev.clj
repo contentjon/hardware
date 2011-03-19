@@ -1,5 +1,5 @@
 (ns com.contentjon.hardware.udev
-  (:import [com.contentjon UDev]
+  (:import [com.contentjon.hardware UDev]
            [com.sun.jna Native Pointer]))
 
 (def library (com.sun.jna.Native/loadLibrary "udev" UDev))
@@ -27,7 +27,7 @@
 (defreftype EnumerateRef "enumerate")
 (defreftype DeviceRef "device")
 
-(defn udev-context
+(defn create-context
   "Create a new udev context"
   []
   (UDevRef. (.udev_new library)))
@@ -70,11 +70,18 @@
   (map first (enum-seq enumeration)))
 
 (defn in-class
-  "Takes an enumeration and a numer of device classes. The classes are
+  "Takes an enumeration and a number of device classes. The classes are
    added to the enumeration. Returns the modified enumeration"
   [enumeration & classes]
   (doseq [clazz classes]
     (.udev_enumerate_add_match_subsystem library (:native enumeration) clazz))
+  enumeration)
+
+(defn has-name
+  "Takes an enumeration and a device name. The name is added to the enumeration. 
+   Returns the modified enumeration"
+  [enumeration devname]
+  (.udev_enumerate_add_match_sysname library (:native enumeration) devname)
   enumeration)
 
 (defn has-attribute
@@ -84,16 +91,23 @@
   ([enumeration attribute]
      (has-attribute enumeration attribute Pointer/NULL))
   ([enumeration attribute value]
-     (.udev_enumerate_add_match_sysattr library (:native enumeration) attribute value)
-     enumeration))
+     (if-not (nil? value)
+       (do
+         (.udev_enumerate_add_match_sysattr library (:native enumeration) attribute value)
+         enumeration)
+       (has-attribute enumeration attribute))))
 
 (defn has-property
   "Takes an enumration, an attribute name and a value. A query for
    the property value is added to the enumeration. Returns the
    modified enumeration"
   [enumeration property value]
-  (.udev_enumerate_add_match_property library (:native enumeration) property value)
-  enumeration)
+  (if-not (nil? value)
+    (do
+      (.udev_enumerate_add_match_property library (:native enumeration) property value)
+      enumeration)
+  (throw
+      (java.lang.NullPointerException. "Property value can not be nil"))))
 
 (defmacro enumerate-devices
   "Takes a udev context and a number of query expressions. The expressions are
@@ -103,6 +117,11 @@
   `(-> (enum ~context)
        ~@queries
        (scan)))
+
+(defn device-name 
+  "Get the system name of the device" 
+  [device]
+  (.udev_device_get_sysname library (:native device)))
 
 (defn attribute
   "Returns a specific attribute of a device as a string"
