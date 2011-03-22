@@ -10,7 +10,8 @@
 (def bus-property "ID_BUS")
 
 (def bus->udev
-  { :i2c  "i2c"
+  { :ata  "ata"
+    :i2c  "i2c"
     :pci  "pci"
     :scsi "scsi"
     :usb  "usb" })

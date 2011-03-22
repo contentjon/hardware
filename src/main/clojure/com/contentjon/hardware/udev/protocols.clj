@@ -20,10 +20,11 @@
   "Adds an attribute query to an enumeration"
   (fn [e a v] (classify-attribute a)))
 
-(def class-property "SUBSYSTEM")
+(defmulti make-attribute
+  "Queries an attribute from a device"
+  (fn [d [a v]] (classify-attribute v)))
 
-(defn make-attribute [device [k v]]
-  (vector k (udev/attribute device v)))
+(def class-property "SUBSYSTEM")
 
 (defn device->map [device]
   (let [clazz      (udev/property device class-property)
@@ -70,3 +71,9 @@
 
 (defmethod add-attribute ::property [enumeration attribute value]
   (udev/has-property enumeration attribute value))
+
+(defmethod make-attribute ::attribute [device [k v]]
+  (vector k (udev/attribute device v)))
+
+(defmethod make-attribute ::property [device [k v]]
+  (vector k (udev/property device v)))
