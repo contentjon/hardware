@@ -27,7 +27,7 @@
 (defreftype EnumerateRef "enumerate")
 (defreftype DeviceRef "device")
 
-(defn create-context
+(defn create-context-impl
   "Create a new udev context"
   []
   (UDevRef. (.udev_new library)))
@@ -78,7 +78,7 @@
   enumeration)
 
 (defn has-name
-  "Takes an enumeration and a device name. The name is added to the enumeration. 
+  "Takes an enumeration and a device name. The name is added to the enumeration.
    Returns the modified enumeration"
   [enumeration devname]
   (.udev_enumerate_add_match_sysname library (:native enumeration) devname)
@@ -118,8 +118,8 @@
        ~@queries
        (scan)))
 
-(defn device-name 
-  "Get the system name of the device" 
+(defn device-name
+  "Get the system name of the device"
   [device]
   (.udev_device_get_sysname library (:native device)))
 
