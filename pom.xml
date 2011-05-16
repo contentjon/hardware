@@ -1,36 +1,37 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" 
+<project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-         
+
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>com.contentjon</groupId>
-    <artifactId>contentjon-parent</artifactId>
+    <groupId>com.gateprotect</groupId>
+    <artifactId>parent-pom-clojure</artifactId>
     <version>1.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>hardware</artifactId>
   <name>hardware</name>
-  <version>0.0.1-SNAPSHOT</version>  
+  <version>0.0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
-  
+
   <scm>
-  	<connection>scm:git:git://github.com/jkrueger/hardware.git</connection>
-  	<developerConnection>scm:git:git@github.com:jkrueger/hardware.git</developerConnection>
-  	<tag>HEAD</tag>
-  	<url>https://github.com/jkrueger/hardware</url>
+    <connection>scm:git:git://github.com/jkrueger/hardware.git</connection>
+    <developerConnection>scm:git:git@github.com:jkrueger/hardware.git</developerConnection>
+    <tag>HEAD</tag>
+    <url>https://github.com/jkrueger/hardware</url>
   </scm>
+
   <dependencies>
-  	<dependency>
-  	  <groupId>com.sun.jna</groupId>
-  	  <artifactId>jna</artifactId>
-  	  <version>3.0.9</version>
-  	</dependency>
+    <dependency>
+      <groupId>com.sun.jna</groupId>
+      <artifactId>jna</artifactId>
+      <version>3.0.9</version>
+    </dependency>
   </dependencies>
-  
+
 </project>
