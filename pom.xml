@@ -10,6 +10,7 @@
     <version>1.0-SNAPSHOT</version>
   </parent>
 
+  <groupId>com.contentjon</groupId>
   <artifactId>hardware</artifactId>
   <name>hardware</name>
   <version>0.0.1-SNAPSHOT</version>
