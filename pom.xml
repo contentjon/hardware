@@ -4,12 +4,7 @@
          
   <modelVersion>4.0.0</modelVersion>
 
-  <parent>
-    <groupId>com.contentjon</groupId>
-    <artifactId>contentjon-parent</artifactId>
-    <version>1.0-SNAPSHOT</version>
-  </parent>
-
+  <groupId>com.contentjon</groupId>
   <artifactId>hardware</artifactId>
   <name>hardware</name>
   <version>0.0.2-SNAPSHOT</version>  
@@ -20,17 +15,69 @@
   </properties>
   
   <scm>
-  	<connection>scm:git:git://github.com/jkrueger/hardware.git</connection>
-  	<developerConnection>scm:git:git@github.com:jkrueger/hardware.git</developerConnection>
-  	<tag>HEAD</tag>
-  	<url>https://github.com/jkrueger/hardware</url>
+    <connection>scm:git:git://github.com/jkrueger/hardware.git</connection>
+    <developerConnection>scm:git:git@github.com:jkrueger/hardware.git</developerConnection>
+    <tag>HEAD</tag>
+    <url>https://github.com/jkrueger/hardware</url>
   </scm>
+
   <dependencies>
-  	<dependency>
-  	  <groupId>com.sun.jna</groupId>
-  	  <artifactId>jna</artifactId>
-  	  <version>3.0.9</version>
-  	</dependency>
+    <dependency>
+      <groupId>org.clojure</groupId>
+      <artifactId>clojure</artifactId>
+      <version>1.2.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.clojure</groupId>
+      <artifactId>clojure-contrib</artifactId>
+      <version>1.2.0</version>
+    </dependency>
+    <dependency>
+      <groupId>swank-clojure</groupId>
+      <artifactId>swank-clojure</artifactId>
+      <version>1.3.2</version>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.jna</groupId>
+      <artifactId>jna</artifactId>
+      <version>3.0.9</version>
+    </dependency>
   </dependencies>
-  
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>com.theoryinpractise</groupId>
+        <artifactId>clojure-maven-plugin</artifactId>
+        <version>1.3.8</version>
+        <configuration>
+          <copiedNamespaces>
+            <namespace>com.contentjon.*</namespace>
+          </copiedNamespaces>
+          <copyDeclaredNamespaceOnly>true</copyDeclaredNamespaceOnly>
+          <namespaces>
+            <namespace>!.*</namespace>
+          </namespaces>
+          <compileDeclaredNamespaceOnly>true</compileDeclaredNamespaceOnly>
+        </configuration>
+        <executions>
+          <execution>
+            <id>compile-clojure</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <repositories>
+    <repository>
+      <id>clojars.org</id>
+      <url>http://clojars.org/repo</url>
+    </repository>
+  </repositories>
+
 </project>
