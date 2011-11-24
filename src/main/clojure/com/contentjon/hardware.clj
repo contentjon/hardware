@@ -1,11 +1,10 @@
 (ns com.contentjon.hardware
-  (:use [com.contentjon.hardware.protocols]))
+  (:require [com.contentjon.hardware.protocols :as protocols]))
 
 (def os-property "os.name")
 
 (def implementations
-  { :Linux ['com.contentjon.hardware.udev
-            'com.contentjon.hardware.udev.protocols] })
+  { :Linux ['com.contentjon.hardware.udev] })
 
 (let [os (System/getProperty os-property)]
   (if-let [implementation (implementations (keyword os))]
@@ -16,3 +15,4 @@
         (str "No implementation for operating system: " os)))))
 
 (def create-context create-context-impl)
+(def devices protocols/devices)
