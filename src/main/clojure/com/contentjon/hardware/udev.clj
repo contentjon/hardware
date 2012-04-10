@@ -125,6 +125,13 @@
   [device]
   (.udev_device_get_sysname library (:native device)))
 
+(defn- is-virtual?
+  "Returns if it is a virtual device, i.e. the sysfs-path starts with
+   /sys/devices/virtual, for example bridges, vlan-devices or loopback devices"
+  [device]
+  (let [sys-path (.udev_device_get_syspath library (:native device))]
+    (.startsWith sys-path "/sys/devices/virtual/")))
+
 (defn attribute
   "Returns a specific attribute of a device as a string"
   [device attribute]
@@ -168,7 +175,9 @@
 (defn device->map [device]
   (let [clazz      (property device class-property)
         attributes (class->attributes clazz)] 
-    (into { :name (device-name device) }
+    (into { :name (device-name device)
+            :virtual (is-virtual? device)
+            }
           (map #(make-attribute device %) attributes))))
 
 (def make-device-map (comp device->map #(device %1 %2)))
