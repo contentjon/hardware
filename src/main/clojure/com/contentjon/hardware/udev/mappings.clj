@@ -29,7 +29,8 @@
     :smart-enabled "ID_ATA_FEATURE_SET_SMART_ENABLED" })
 
 (def network-attributes
-  { :address "address"
+  { :model   "ID_MODEL_FROM_DATABASE"
+    :address "address"
     :speed   "speed"
     :duplex  "duplex"
     :mtu     "mtu" })
