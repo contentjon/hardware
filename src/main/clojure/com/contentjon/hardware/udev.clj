@@ -15,7 +15,9 @@
   ([name type] `(defreftype ~name ~type [~'udev-ref]))
   ([name type members]
      (let [ref-symbol   (symbol (str ".udev_" type "_ref"))
-           unref-symbol (symbol (str ".udev_" type "_unref"))]
+           unref-symbol (symbol (if (empty? type)
+                                  (str ".udev_unref")
+                                  (str ".udev_" type "_unref")))]
        `(defrecord ~name ~(vec (concat ['native] members))
           Object
           (finalize [~'this] (rem-ref ~'this))
