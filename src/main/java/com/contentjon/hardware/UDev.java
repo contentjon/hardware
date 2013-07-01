@@ -27,8 +27,8 @@ public interface UDev extends Library {
     Pointer udev_enumerate_get_list_entry(Pointer enumeration);
 
     Pointer udev_device_new_from_syspath(Pointer udev, String name);
-    void    udev_device_ref();
-    void    udev_device_unref();
+    void    udev_device_ref(Pointer udev);
+    void    udev_device_unref(Pointer udev);
 
     String udev_device_get_subsystem(Pointer device);
     String udev_device_get_syspath(Pointer device);
